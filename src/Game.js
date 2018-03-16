@@ -10,23 +10,51 @@ export default class Game {
     this.ctx.canvas.height = height;
 
     this.balls = [];
+    this.zoom = 1;
+    this.origin = {x: 0, y: 0};
+    this.setInput();
+  }
+
+  setInput(){
+    this.down = false;
+    this.ctx.canvas.addEventListener("wheel", (event) => {
+      let dzoom = event.wheelDelta/2000;
+      this.zoom += dzoom;
+    });
+    this.ctx.canvas.addEventListener("mousedown", event => {
+      this.down = true;
+    });
+    this.ctx.canvas.addEventListener("mousemove", event => {
+      if(this.down)
+      {
+        console.log('movementX' + event.movementX);
+        console.log('movementY' + event.movementY);
+        this.origin.x -= event.movementX/this.zoom;
+        this.origin.y -= event.movementY/this.zoom;
+        console.log('this.origin.x ' + this.origin.x);
+        console.log('this.origin.y ' + this.origin.y);
+      }
+    });
+    this.ctx.canvas.addEventListener("mouseup", event => {
+      this.down = false;
+    });
   }
 
   init(){
     // put sun in middle
-    let sun = new Ball(1000, 800, 400);
+    let sun = new Ball(1000, 0, 0); // mass, x, y
     sun.velocity = {x: 0, y: 0};
     this.balls.push(sun);
 
-    let ball1 = new Ball(1, 100, 400);
-    ball1.velocity = {x: 0, y: 60};
+    let ball1 = new Ball(1, -400, 0);
+    ball1.velocity = {x: 0, y: 70};
     this.balls.push(ball1);
 
-    let ball2 = new Ball(1, 1500, 400);
+    let ball2 = new Ball(1, 700, 0);
     ball2.velocity = {x: 0, y: -50};
     this.balls.push(ball2);
 
-    let ball3 = new Ball(1, 800, 800);
+    let ball3 = new Ball(1, 0, 400);
     ball3.velocity = {x: 150, y: 0};
     this.balls.push(ball3);
   }
@@ -51,6 +79,7 @@ export default class Game {
         }
       });
 
+      // register the current acceleration on the object
       ball.acceleration.x += dv.x;
       ball.acceleration.y += dv.y;
 
@@ -70,19 +99,22 @@ export default class Game {
   }
 
   draw(delta){
-    let ctx = this.ctx
+    let origin = this.origin;
+    let ctx = this.ctx;
+    let zoom = this.zoom;
+
     this.balls.forEach((ball) => {
       // draw ball
       ctx.fillStyle = "white";
       ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.radius, 0, 2*Math.PI); // x, y, radius, start angle, end angle, couterclockwise
+      ctx.arc((ball.x - origin.x)*zoom + 800, (ball.y - origin.y)*zoom + 450, ball.radius*zoom, 0, 2*Math.PI); // x, y, radius, start angle, end angle, couterclockwise
       ctx.fill();
 
       // draw velocity
       /*ctx.strokeStyle = "#FF0000";
       ctx.beginPath();
-      ctx.moveTo(ball.x, ball.y);
-      ctx.lineTo(ball.x + ball.velocity.x, ball.y + ball.velocity.y);
+      ctx.moveTo(ball.x*zoom, ball.y*zoom);
+      ctx.lineTo( (ball.x + ball.velocity.x)*zoom, (ball.y + ball.velocity.y)*zoom );
       ctx.stroke();*/
 
       // todo: draw path
@@ -90,4 +122,4 @@ export default class Game {
   }
 }
 
-const G = 10000;
+const G = 10000; // strength of gravity
