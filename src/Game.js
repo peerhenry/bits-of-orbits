@@ -1,6 +1,7 @@
 import Ball from './Ball.js'
 import Gravity from './Gravity.js'
 import Universe from './Universe.js'
+import setup from './BigBang.js'
 
 export default class Game {
 
@@ -43,22 +44,7 @@ export default class Game {
   }
 
   init(){
-    // put sun in middle
-    let sun = new Ball(1000, 0, 0); // mass, x, y
-    sun.velocity = {x: 0, y: 0};
-    this.universe.addParticle(sun);
-
-    let ball1 = new Ball(1, -400, 0);
-    ball1.velocity = {x: 0, y: 50};
-    this.universe.addParticle(ball1);
-
-    let ball2 = new Ball(1, 700, 0);
-    ball2.velocity = {x: 0, y: -50};
-    this.universe.addParticle(ball2);
-
-    let ball3 = new Ball(1, 0, 400);
-    ball3.velocity = {x: 150, y: 0};
-    this.universe.addParticle(ball3);
+    setup(this.universe);
   }
 
   update(delta){
