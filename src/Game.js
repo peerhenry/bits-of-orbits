@@ -18,6 +18,12 @@ export default class Game {
     this.zoom = 1;
     this.origin = {x: 0, y: 0};
     this.setInput();
+
+    this.isPaused = false;
+  }
+
+  togglePause(){
+    this.isPaused = !this.isPaused;
   }
 
   setInput(){
@@ -48,7 +54,7 @@ export default class Game {
   }
 
   update(delta){
-    this.universe.update(delta);
+    if(!this.isPaused) this.universe.update(delta);
   }
 
   clear(){

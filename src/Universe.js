@@ -37,7 +37,10 @@ export default class Universe{
       let newMass = particleOne.mass + particleTwo.mass;
       let newX = (particleOne.x * particleOne.mass + particleTwo.x * particleTwo.mass)/ newMass;
       let newY = (particleOne.y * particleOne.mass + particleTwo.y * particleTwo.mass)/ newMass;
+      let newVx = (particleOne.velocity.x * particleOne.mass + particleTwo.velocity.x * particleTwo.mass)/ newMass;
+      let newVy = (particleOne.velocity.y * particleOne.mass + particleTwo.velocity.y * particleTwo.mass)/ newMass;
       let newParticle = new Ball(newMass, newX, newY);
+      newParticle.velocity = {x: newVx, y: newVy};
       this.particles.push(newParticle);
     });
 

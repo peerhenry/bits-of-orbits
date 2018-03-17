@@ -36,3 +36,10 @@ arb.onclick = () => {
   let vy = Math.random()*vscope - vscope/2;
   game.universe.addBallWithVelocity(mass, x, y, vx, vy);
 }
+
+let pause = document.getElementById("pause");
+pause.onclick = () => {
+  game.togglePause();
+  if(game.isPaused) pause.innerHTML = "Continue";
+  else pause.innerHTML = "Pause";
+}
