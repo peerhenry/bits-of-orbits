@@ -18,3 +18,21 @@ function gameLoop(){
 game.init();
 
 setInterval(gameLoop, 1000*(1/60));
+
+const vscope = 800;
+let arb = document.getElementById("arb");
+const rmin = 200;
+const rmax = 800;
+arb.onclick = () => {
+  let mass = Math.random()*5 + 0.5;
+
+  let theta = Math.random()*2*Math.PI;
+  let r = Math.random()*(rmax-rmin) + rmin;
+
+  let x = r*Math.cos(theta);
+  let y = r*Math.sin(theta);
+
+  let vx = Math.random()*vscope - vscope/2;
+  let vy = Math.random()*vscope - vscope/2;
+  game.universe.addBallWithVelocity(mass, x, y, vx, vy);
+}

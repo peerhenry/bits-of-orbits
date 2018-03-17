@@ -7,6 +7,12 @@ export default class Universe{
     this.gravity = gravity;
   }
 
+  addBallWithVelocity(mass, x, y, vx, vy){
+    let ball = new Ball(mass, x, y);
+    ball.velocity = {x: vx, y: vy};
+    this.addParticle(ball);
+  }
+
   addParticle(particle){
     this.particles.push(particle);
   }
