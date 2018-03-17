@@ -1,5 +1,6 @@
 import Ball from './Ball.js'
 import Gravity from './Gravity.js'
+import Universe from './Universe.js'
 
 export default class Game {
 
@@ -10,8 +11,8 @@ export default class Game {
     this.ctx.canvas.width = width;
     this.ctx.canvas.height = height;
 
-    this.gravity = new Gravity(10000); // strength of gravity
-    this.balls = [];
+    let gravity = new Gravity(10000); // strength of gravity
+    this.universe = new Universe(gravity);
     this.wheel = 0;
     this.zoom = 1;
     this.origin = {x: 0, y: 0};
@@ -45,24 +46,23 @@ export default class Game {
     // put sun in middle
     let sun = new Ball(1000, 0, 0); // mass, x, y
     sun.velocity = {x: 0, y: 0};
-    this.balls.push(sun);
+    this.universe.addParticle(sun);
 
     let ball1 = new Ball(1, -400, 0);
-    ball1.velocity = {x: 0, y: 70};
-    this.balls.push(ball1);
+    ball1.velocity = {x: 0, y: 50};
+    this.universe.addParticle(ball1);
 
     let ball2 = new Ball(1, 700, 0);
     ball2.velocity = {x: 0, y: -50};
-    this.balls.push(ball2);
+    this.universe.addParticle(ball2);
 
     let ball3 = new Ball(1, 0, 400);
     ball3.velocity = {x: 150, y: 0};
-    this.balls.push(ball3);
+    this.universe.addParticle(ball3);
   }
 
   update(delta){
-    // update balls
-    this.gravity.update(delta, this.balls);
+    this.universe.update(delta);
   }
 
   clear(){
@@ -75,7 +75,7 @@ export default class Game {
     let ctx = this.ctx;
     let zoom = this.zoom;
 
-    this.balls.forEach((ball) => {
+    this.universe.particles.forEach((ball) => {
       // draw ball
       let view_radius = ball.radius*zoom;
       let bx = (ball.x - origin.x)*zoom + 800;
@@ -83,7 +83,16 @@ export default class Game {
       if(view_radius > 0.5)
       {
         // draw circle
-        ctx.fillStyle = "white";
+        if(ball.time < colAnTime)
+        {
+          let green = 255;
+          let blue = 0;
+          if(ball.time < colAnTimeHalf) green = Math.floor(incr*ball.time);
+          else if(ball.time >= colAnTimeHalf) blue = Math.floor(incr*(ball.time-colAnTimeHalf));
+          let colorString = "rgb(255, " + green  + ", " + blue + ")";
+          ctx.fillStyle = colorString;
+        }
+        else ctx.fillStyle = "white";
         ctx.beginPath();
         ctx.arc(bx, by, view_radius, 0, 2*Math.PI); // x, y, radius, start angle, end angle, couterclockwise
         ctx.fill();
@@ -106,3 +115,7 @@ export default class Game {
     });
   }
 }
+
+const colAnTime = 2000; // collision Animation Time
+const colAnTimeHalf = 1000;
+const incr = 2*(255/colAnTime);

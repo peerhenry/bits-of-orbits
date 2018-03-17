@@ -9,5 +9,7 @@ export default class Ball{
     this.velocity = {x: 0, y: 0};
     this.acceleration = {x: 0, y: 0};
     this.radius = 10 + 3*Math.log(mass);
+    this.isColliding = false;
+    this.time = 0;
   }
 }
