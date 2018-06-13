@@ -20,10 +20,15 @@ export default class Game {
     this.setInput();
 
     this.isPaused = false;
+    this.trackPaths = true;
   }
 
   togglePause(){
     this.isPaused = !this.isPaused;
+  }
+
+  togglePaths(){
+    this.trackPaths = !this.trackPaths;
   }
 
   setInput(){
@@ -68,46 +73,12 @@ export default class Game {
     let zoom = this.zoom;
 
     this.universe.particles.forEach((ball) => {
-      // draw ball
-      let view_radius = ball.radius*zoom;
-      let bx = (ball.x - origin.x)*zoom + 800;
-      let by = (ball.y - origin.y)*zoom + 450;
-      if(view_radius > 0.5)
-      {
-        // draw circle
-        if(ball.time < colAnTime)
-        {
-          let green = 255;
-          let blue = 0;
-          if(ball.time < colAnTimeHalf) green = Math.floor(incr*ball.time);
-          else if(ball.time >= colAnTimeHalf) blue = Math.floor(incr*(ball.time-colAnTimeHalf));
-          let colorString = "rgb(255, " + green  + ", " + blue + ")";
-          ctx.fillStyle = colorString;
-        }
-        else ctx.fillStyle = "white";
-        ctx.beginPath();
-        ctx.arc(bx, by, view_radius, 0, 2*Math.PI); // x, y, radius, start angle, end angle, couterclockwise
-        ctx.fill();
-      }
-      else
-      {
-        // draw pixel
-        ctx.fillStyle = "white";
-        ctx.fillRect( bx, by, 1, 1 );
-      }
-
-      // draw velocity
-      /*ctx.strokeStyle = "#FF0000";
-      ctx.beginPath();
-      ctx.moveTo(ball.x*zoom, ball.y*zoom);
-      ctx.lineTo( (ball.x + ball.velocity.x)*zoom, (ball.y + ball.velocity.y)*zoom );
-      ctx.stroke();*/
-
-      // todo: draw path
+      ball.draw(delta, origin, ctx, zoom);
     });
+    if(this.trackPaths){
+      this.universe.particles.forEach((ball) => {
+        ball.drawPath(delta, origin, ctx, zoom);
+      });
+    }
   }
 }
-
-const colAnTime = 2000; // collision Animation Time
-const colAnTimeHalf = 1000;
-const incr = 2*(255/colAnTime);

@@ -10,14 +10,21 @@ const delta = {
 }
 
 function gameLoop(){
-  game.update(delta);
-  game.clear();
-  game.draw(delta);
+  try{
+    game.update(delta);
+    game.clear();
+    game.draw(delta);
+  }
+  catch(error)
+  {
+    console.log(error);
+    clearInterval(interval);
+  }
 }
 
 game.init();
 
-setInterval(gameLoop, 1000*(1/60));
+const interval = setInterval(gameLoop, 1000*(1/60));
 
 const vscope = 800;
 let arb = document.getElementById("arb");
@@ -42,4 +49,9 @@ pause.onclick = () => {
   game.togglePause();
   if(game.isPaused) pause.innerHTML = "Continue";
   else pause.innerHTML = "Pause";
+}
+
+let trackPaths = document.getElementById("track-paths");
+trackPaths.onclick = () => {
+  game.togglePaths();
 }

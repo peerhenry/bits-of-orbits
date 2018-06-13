@@ -46,6 +46,8 @@ export default class Gravity{
     // update position of the ball
     ball.x += ball.velocity.x * delta.seconds;
     ball.y += ball.velocity.y * delta.seconds;
+
+    ball.path_tracker.pushPoint({x: ball.x, y: ball.y});
   }
 
 }
