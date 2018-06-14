@@ -3,8 +3,10 @@ import Ball from './Ball.js';
 export default class Universe{
   constructor(gravity){
     this.particles = [];
+    this.removals = [];
     this.collisions = [];
     this.gravity = gravity;
+    this.horizon = 16000;
   }
 
   addBallWithVelocity(mass, x, y, vx, vy){
@@ -48,13 +50,34 @@ export default class Universe{
     this.collisions = [];
   }
 
+  removeDistantBalls()
+  {
+    this.removals.forEach((removal) => {
+      let index = this.particles.indexOf(removal);
+      if(index > -1) this.particles.splice(index, 1);
+    });
+    this.removals = [];
+  }
+
+  updateBalls(delta)
+  {
+    this.particles.forEach((ball) => {
+      if(ball.x < -this.horizon || ball.x > this.horizon || ball.y < -this.horizon || ball.y > this.horizon)
+      {
+        this.removals.push(ball);
+      }
+      else
+      {
+        ball.time += delta.ms;
+        if(!ball.isColliding) this.gravity.exertGravityOnBall(delta, this, ball);
+      }
+    });
+  }
+
   update(delta){
     this.handleCollisions();
-    // update gravity on balls
-    this.particles.forEach((ball) => {
-      ball.time += delta.ms;
-      if(!ball.isColliding) this.gravity.exertGravityOnBall(delta, this, ball);
-    });
+    this.removeDistantBalls();
+    this.updateBalls(delta);
   }
 
 }

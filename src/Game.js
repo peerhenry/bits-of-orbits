@@ -67,10 +67,34 @@ export default class Game {
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
 
+  drawHorizon(){
+    let horizon = this.universe.horizon;
+    let ctx = this.ctx;
+    let zoom = this.zoom;
+    ctx.strokeStyle = 'red';
+    ctx.beginPath();
+    let canvas_horizon = zoom*horizon;
+
+    let hor_left = (-horizon - this.origin.x)*zoom + 800;
+    let hor_right = (horizon - this.origin.x)*zoom + 800;
+    let hor_top = (-horizon - this.origin.y)*zoom + 450;
+    let hor_bottom = (horizon - this.origin.y)*zoom + 450;
+
+    ctx.moveTo(hor_left, hor_top);
+    ctx.lineTo(hor_right, hor_top);
+    ctx.lineTo(hor_right, hor_bottom);
+    ctx.lineTo(hor_left, hor_bottom);
+    ctx.lineTo(hor_left, hor_top);
+    ctx.closePath();
+    ctx.stroke();
+  }
+
   draw(delta){
     let origin = this.origin;
     let ctx = this.ctx;
     let zoom = this.zoom;
+
+    this.drawHorizon();
 
     this.universe.particles.forEach((ball) => {
       ball.draw(delta, origin, ctx, zoom);
